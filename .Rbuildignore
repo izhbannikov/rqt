@@ -1,0 +1,7 @@
+.DS_Store
+.Rhistory
+vignettes/*.dvi
+vignettes/*.tex
+vignettes/*.gz
+vignettes/*.log
+vignettes/*.pdf
