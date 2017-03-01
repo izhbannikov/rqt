@@ -1,0 +1,26 @@
+Package: rqt
+Type: Package
+Title: rqt: utilities for gene-level meta-analysis
+Version: 0.99.81
+Author: I. Y. Zhbannikov, K. G. Arbeev, A. I. Yashin.
+Maintainer: Ilya Y. Zhbannikov <ilya.zhbannikov@duke.edu>
+Description: Despite the recent advances of modern GWAS methods, it
+        still remains an important problem of addressing calculation an
+        effect size and corresponding p-value for the whole gene rather
+        than for single variant. The R- package rqt offers gene-level
+        GWAS meta-analysis. For more information, see: "Gene-set
+        association tests for next-generation sequencing data" by Lee
+        et al (2016), Bioinformatics, 32(17), i611-i619,
+        <doi:10.1093/bioinformatics/btw429>.
+URL: https://github.com/izhbannikov/rqt
+BugReports: https://github.com/izhbannikov/rqt/issues
+License: GPL
+RoxygenNote: 6.0.1
+Suggests: BiocStyle, knitr, rmarkdown
+VignetteBuilder: knitr
+Imports:
+        stats,Matrix,ropls,methods,car,RUnit,metap,CompQuadForm,glmnet,utils
+Depends: R (>= 3.4), SummarizedExperiment
+Encoding: UTF-8
+biocViews: GenomeWideAssociation, Regression, Survival,
+        PrincipalComponent, StatisticalMethod, Sequencing
