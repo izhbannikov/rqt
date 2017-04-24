@@ -1,0 +1,227 @@
+---
+title: 'Using RQT, an R package for gene-level meta-analysis'
+author: "Ilya Y. Zhbannikov"
+date: "`r BiocStyle::doc_date()`"
+output: BiocStyle::html_document
+vignette: >
+  %\VignetteIndexEntry{Tutorial for rqt package}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+
+## Overview
+
+Despite the recent advances of modern GWAS methods, 
+it is still remains an important problem of addressing 
+calculation an effect size and corresponding p-value 
+for the whole gene rather than for single variant. 
+We developed an R-package rqt, which offers gene-level GWAS meta-analysis. 
+The package can be easily included into bioinformatics pipeline 
+or used as stand-alone. 
+Contact: ilya.zhbannikov@duke.edu for questions of 
+usage the \texttt{rqt} or any other issues.
+
+Below we provide several examples that show GWAS 
+meta-analysis on gene-level layer.
+
+### Methods in brief
+
+The workflow of gene-level meta analysis consists of the following steps: 
+(i) reducing the number of predictors, thereby alleviating 
+correlation problem in variants (accounting for LD); 
+(ii) then the regression mod-el is fitted on the reduced dataset 
+to obtain corresponding regression coefficient ("effect sizes"); 
+(iii) these coefficients are then to be pooled into a total index 
+representing a total gene-level effect size and corresponding 
+statistics is calculated. P- and q- values are then calculated 
+using this statistics from asymptotic approximation or permutation 
+procedure; (iv) the final step is combining gene-level p-values 
+calculated from each study with Fisher's combined probability method.
+
+## Installation of \emph{rqt} package
+
+In order to install the \emph{rqt} package, the user must first install R (\url{http://www.r-project.org}). After that, \emph{rqt} can be installed with:
+
+```{r, echo=TRUE, eval=FALSE}
+devtools::install_github("izhbannikov/rqt", buildVignette=TRUE)
+```
+
+## Data description
+
+### Single dataset
+
+In \texttt{rqt} requires the following datasets: 
+(i) \texttt{phenotype} (a \texttt{N} by 1) matrix (i.e. a vector); 
+and (ii) \texttt{genotype} - an object of class 
+\texttt{SummarizedExperiment} containing one assay:
+(a \texttt{N} by \texttt{M}) matrix, where 
+\texttt{N} - is the total 
+number of individuals in the study and \texttt{M} is the total number 
+of genetic variants. Optionally, \texttt{rqt} can accept covariates, 
+in form of \texttt{N} by \texttt{K} matrix, where \texttt{K} 
+is the total number of 
+covariates used in the study. Phenotype can be dichotomous 
+(0/1, where 1 indicates control and 0 case).
+
+### Meta-analysis
+
+In meta-analysis, \texttt{rqt} requires a list of \texttt{M} 
+(\texttt{M} - number 
+of datasets used in meta-analysis) and optionally it accepts
+covariates in form described above.
+
+## Examples
+
+### Gene-level analysis on a single dataset
+
+#### Dichotomous phenotype
+```{r, echo=TRUE, message=FALSE}
+library(rqt)
+
+data <- data.matrix(read.table(system.file("extdata/test.bin1.dat",
+                                           package="rqt"), header=TRUE))
+pheno <- data[,1]
+geno <- data[, 2:dim(data)[2]]
+colnames(geno) <- paste(seq(1, dim(geno)[2]))
+geno.obj <- SummarizedExperiment(geno)
+obj <- rqt(phenotype=pheno, genotype=geno.obj)
+res <- geneTest(obj, method="pca", out.type = "D")
+print(res)
+```
+
+#### Continuous phenotype
+
+```{r, echo=TRUE, message=FALSE}
+library(rqt)
+
+data <- data.matrix(read.table(system.file("extdata/test.cont1.dat",
+                                           package="rqt"), header = TRUE))
+pheno <- data[,1]
+geno <- data[, 2:dim(data)[2]]
+colnames(geno) <- paste(seq(1, dim(geno)[2]))
+geno.obj <- SummarizedExperiment(geno)
+obj <- rqt(phenotype=pheno, genotype=geno.obj)
+res <- geneTest(obj, method="pca", out.type = "C")
+print(res)
+```
+
+#### Preprocessing with Partial Least Square regression (PLS)
+
+This method is used for continous outcome, i.e. out.type = "C".
+
+````{r, echo=TRUE, message=FALSE}
+library(rqt)
+
+data <- data.matrix(read.table(system.file("extdata/test.cont1.dat",
+                                           package="rqt"), header = TRUE))
+pheno <- data[,1]
+geno <- data[, 2:dim(data)[2]]
+colnames(geno) <- paste(seq(1, dim(geno)[2]))
+geno.obj <- SummarizedExperiment(geno)
+obj <- rqt(phenotype=pheno, genotype=geno.obj)
+res <- geneTest(obj, method="pls", out.type = "C")
+print(res)
+```
+
+#### Preprocessing with Partial Least Square Discriminant Analysis (PLS-DA)
+
+This method of data preprocessing is used for dichotomous outcome.
+
+````{r, echo=TRUE, message=FALSE}
+library(rqt)
+
+data <- data.matrix(read.table(system.file("extdata/test.bin1.dat",
+                                           package="rqt"), header=TRUE))
+pheno <- data[,1]
+geno <- data[, 2:dim(data)[2]]
+colnames(geno) <- paste(seq(1, dim(geno)[2]))
+geno.obj <- SummarizedExperiment(geno)
+obj <- rqt(phenotype=pheno, genotype=geno.obj)
+res <- geneTest(obj, method="pls", out.type = "D", scale = TRUE)
+print(res)
+```
+
+#### Using additional covariates
+
+Quite often, researchers want to supply not only genetic 
+data but also specific covariates, 
+representic some physiological parameters or environment 
+(for example, to evaluate 
+hyphoteses of gene-environment interactions). 
+In such cases, the package \texttt{rqt} 
+can accept additional covariates, in form of 
+\texttt{N} by \texttt{K} matrix, as provided below:
+
+````{r, echo=TRUE, message=FALSE}
+library(rqt)
+
+data <- data.matrix(read.table(system.file("extdata/test.bin1.dat",
+                                           package="rqt"), header = TRUE))
+pheno <- data[,1]
+geno <- data[, 2:dim(data)[2]]
+colnames(geno) <- paste(seq(1, dim(geno)[2]))
+geno.obj <- SummarizedExperiment(geno)
+covars <- read.table(system.file("extdata/test.cova1.dat",package="rqt"), 
+    header=TRUE)
+obj <- rqt(phenotype=pheno, genotype=geno.obj, covariates = covars)
+res <- geneTest(obj, method="pca", out.type = "D")
+print(res)
+```
+
+For continous phenotype:
+
+````{r, echo=TRUE, message=FALSE}
+library(rqt)
+
+data <- data.matrix(read.table(system.file("extdata/test.cont1.dat",
+                                           package="rqt"), header = TRUE))
+pheno <- data[,1]
+geno <- data[, 2:dim(data)[2]]
+colnames(geno) <- paste(seq(1, dim(geno)[2]))
+geno.obj <- SummarizedExperiment(geno)
+covars <- read.table(system.file("extdata/test.cova1.dat",package="rqt"), 
+    header=TRUE)
+obj <- rqt(phenotype=pheno, genotype=geno.obj, covariates = covars)
+res <- geneTest(obj, method="pca", out.type = "C")
+print(res)
+```
+
+### Meta-analysis
+
+```{r, echo=TRUE, message=FALSE}
+library(rqt)
+
+data1 <- data.matrix(read.table(system.file("extdata/phengen2.dat",
+                                            package="rqt"), skip=1))
+pheno <- data1[,1]
+geno <- data1[, 2:dim(data1)[2]]
+colnames(geno) <- paste(seq(1, dim(geno)[2]))
+geno.obj <- SummarizedExperiment(geno)
+obj1 <- rqt(phenotype=pheno, genotype=geno.obj)
+
+data2 <- data.matrix(read.table(system.file("extdata/phengen3.dat",
+                                            package="rqt"), skip=1))
+pheno <- data2[,1]
+geno <- data2[, 2:dim(data2)[2]]
+colnames(geno) <- paste(seq(1, dim(geno)[2]))
+geno.obj <- SummarizedExperiment(geno)
+obj2 <- rqt(phenotype=pheno, genotype=geno.obj)
+
+data3 <- data.matrix(read.table(system.file("extdata/phengen.dat",
+                                            package="rqt"), skip=1))
+pheno <- data3[,1]
+geno <- data3[, 2:dim(data3)[2]]
+colnames(geno) <- paste(seq(1, dim(geno)[2]))
+geno.obj <- SummarizedExperiment(geno)
+obj3 <- rqt(phenotype=pheno, genotype=geno.obj)
+
+res.meta <- geneTestMeta(list(obj1, obj2, obj3))
+print(res.meta)
+```
+
+
+## Session information
+```{r, echo=TRUE}
+sessionInfo()
+```
