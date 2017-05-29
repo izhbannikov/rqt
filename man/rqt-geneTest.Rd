@@ -10,7 +10,8 @@ geneTest(obj, ...)
 
 \S4method{geneTest}{rqt}(obj, perm = 0, STT = 0.2, weight = FALSE,
   cumvar.threshold = 75, out.type = "D", method = "pca",
-  scaleData = FALSE, asym.pval = FALSE, verbose = FALSE)
+  scaleData = FALSE, asym.pval = FALSE, penalty = 0.001,
+  verbose = FALSE)
 }
 \arguments{
 \item{obj}{Object of class \code{rqt}}
@@ -37,12 +38,16 @@ Possible values: \code{D} (dichotomous or binary),
 \code{C} (continous or quantitative).}
 
 \item{method}{Method used to reduce multicollinerity and account for LD. 
-Default: PLS-DA.}
+Default: \code{pca}. 
+Another methods available: \code{lasso}, \code{ridge}, \code{pls}.}
 
 \item{scaleData}{A logic parameter (TRUE/FALSE) indicating scaling of 
 the genotype dataset.}
 
 \item{asym.pval}{Indicates Monte Carlo approximation for p-values. Default: FALSE.}
+
+\item{penalty}{A value of \code{penalty} parameter for LASSO/ridge regression.
+Default: 0.001}
 
 \item{verbose}{Indicates verbosing output. Default: FALSE.}
 }
