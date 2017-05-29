@@ -9,7 +9,7 @@
 #' @importFrom stats prcomp
 #' @importFrom stats coef predict
 #' @importFrom utils head
-#' @importFrom glmnet cv.glmnet
+#' @importFrom glmnet cv.glmnet glmnet
 #' @importFrom ropls opls
 #' @importFrom Matrix Matrix
 #' @importFrom CompQuadForm davies imhof liu
@@ -20,24 +20,11 @@
 #' @importFrom SummarizedExperiment SummarizedExperiment
 #' @importFrom SummarizedExperiment assay assays
 #' @importFrom RUnit checkEqualsNumeric
+#' @importFrom pls plsr cppls explvar selectNcomp
 #'
 NULL
 
-#### Dimensionality reduction methods ####
 
-#'ridge_se Returns variance-covariance matrix and 
-#'standard deviation from ridge and LASSO
-#'regression fit.
-#'
-#' @param xs Genotype matrix
-#' @param y Phenotype
-#' @param yhat Predicted output
-#' @param my_mod Ridge/LASSO fit
-#' @param verbose Indicates verbosing output.
-#' Default: FALSE.
-#' @return list(vcov, se). 
-#' vcov: variance-covariance matrix;
-#' se: standard deviation
 ridge_se <- function(xs,y,yhat,my_mod, verbose=FALSE){
   # Note, you can't estimate an intercept here
   n <- dim(xs)[1]
@@ -92,9 +79,11 @@ vcov_ridge <- function(x, y,  rmod, verbose=FALSE) {
 #' not scaling should be performed. Default: \code{FALSE}.
 #' @param cumvar.threshold A threshold value for explained variance.
 #' Default: \code{75}
-#' @param verbose Indicates verbosing output. Default: FALSE.
 #' @param out.type An output (phenotype) type. 
-#' Default: \code{"D"}.
+#' Default: \code{"D"}
+#' @param penalty Value of penalty parameter for LASSO/ridge regression. 
+#' Default: \code{0.001}
+#' @param verbose Indicates verbosing output. Default: FALSE.
 #' @return A list of one: "S" - a data frame of predictor values.
 preprocess <- function(data, pheno=NULL,
                        method="pca",
@@ -102,6 +91,7 @@ preprocess <- function(data, pheno=NULL,
                        scaleData=FALSE, 
                        cumvar.threshold=75,
                        out.type="D",
+                       penalty=0.001,
                        verbose=FALSE) {
     
     
@@ -113,10 +103,10 @@ preprocess <- function(data, pheno=NULL,
             return(preprocessPLS(data, pheno, scaleData, cumvar.threshold, out.type))
         },
         lasso={
-            return(preprocessLASSO(data, pheno, reg.family))
+            return(preprocessLASSO(data, pheno, reg.family, penalty))
         },
         ridge={
-            return(preprocessRidge(data, pheno, reg.family))
+            return(preprocessRidge(data, pheno, reg.family, penalty))
         },
         {
             stop("Unknown method provided.")
@@ -210,7 +200,7 @@ preprocessPCA <- function(data, scaleData, cumvar.threshold, verbose) {
     #    cumvar.threshold)] %*% 
     #t(res.pca$rotation[,which(eig.decathlon2.active$cumvar <= 
     #    cumvar.threshold)])
-  
+    ct <- cumvar.threshold
     S <- res.pca$x[,which(eig.table$cumvar <= ct)]
   
     ### And add the center (and re-scale) back to data ###
@@ -223,13 +213,13 @@ preprocessPCA <- function(data, scaleData, cumvar.threshold, verbose) {
   
     indexes <- which(eig.table$cumvar <= ct)
     
-    return(list(S = S, indexes=indexes))
+    return(list(S = S, indexes=indexes, model="PCA"))
 }
 
 
 preprocessPLS <- function(data, pheno, scaleData, cumvar.threshold, out.type) {
   
-    ct <- cumvar.threshold/100
+    
   
     if(scaleData){
         data.scaled <- scale(data, center = TRUE)
@@ -238,80 +228,147 @@ preprocessPLS <- function(data, pheno, scaleData, cumvar.threshold, out.type) {
     }
   
     n.snp <- dim(data.scaled)[2]
-    npred <- round(n.snp*ct)
-    numcomp <- ifelse(n.snp < 10, n.snp, npred)
+    
+    #if(!is.null(cumvar.threshold)) {
+    #    ct <- cumvar.threshold/100
+    #    npred <- round(n.snp*ct)
+    #    numcomp <- ifelse(n.snp < 10, n.snp, npred)
+    #}
   
     if(out.type == "D") { # PLS-DA
-        model <- try(opls(x = data.scaled, y=as.factor(pheno), 
-                          predI=numcomp, 
-                          plotL = FALSE, 
-                          log10L=FALSE, 
-                          algoC = "nipals"), 
-                          silent = TRUE)
-    
-        if(inherits(model, "try-error")) {
-            for(i in 2:6) {
-                ct <- ct/i
-                npred <- round(dim(data.scaled)[2]*ct)
+        stop("Sorry, PLS for dichotomous trait is not yet supported.")
+        ## Uncomment the code below if you want to use ropls and PLS-DA ##
+        #model <- opls(x = data.scaled, y=as.factor(pheno), 
+        #                  predI=numcomp, 
+        #                  plotL = FALSE, 
+        #                  log10L=FALSE, 
+        #                  algoC = "nipals", 
+        #                  silent = TRUE)
+        #
+        #if(inherits(model, "try-error")) {
+        #    for(i in 2:6) {
+        #        ct <- ct/i
+        #        npred <- round(dim(data.scaled)[2]*ct)
+        #
+        #        model <- opls(x = data.scaled, y=as.factor(pheno), 
+        #                      predI=npred, 
+        #                      plotL = FALSE, 
+        #                      log10L=FALSE, 
+        #                      algoC = "nipals", 
+        #                      silent = TRUE)
+        #
+        #        if(!inherits(model, "try-error")) {
+        #            break
+        #        }
+        #    }
+        #}
         
-                model <- opls(x = data.scaled, y=as.factor(pheno), 
-                              predI=npred, 
-                              plotL = FALSE, 
-                              log10L=FALSE, 
-                              algoC = "nipals", 
-                              silent = TRUE)
+        #S <- model@scoreMN #%*% t(model@loadingMN)
+        #Y <- model@uMN %*% t(model@cMN)
         
-                if(!inherits(model, "try-error")) {
-                    break
-                }
-            }
-        }
     } else if(out.type == "C") { # PLS
-        model <- opls(x = data.scaled, y=pheno, 
-                      predI=numcomp, 
-                      plotL = FALSE, 
-                      log10L=FALSE, 
-                      algoC = "nipals", 
-                      silent = TRUE)
+        #model <- opls(x = data.scaled, y=pheno, 
+        #              predI=numcomp, 
+        #              plotL = FALSE, 
+        #              log10L=FALSE, 
+        #              algoC = "nipals", 
+        #              silent = TRUE)
     
-        if(inherits(model, "try-error")) {
-            cumvar.threshold <- cumvar.threshold/2
-            npred <- round(dim(data.scaled)[2]*ct)
-            model <- opls(x = data.scaled, y=as.factor(pheno), 
-                          predI=npred, plotL = FALSE, 
-                          log10L=FALSE, algoC = "nipals", 
-                          silent = TRUE)
+        #if(inherits(model, "try-error")) {
+        #    cumvar.threshold <- cumvar.threshold/2
+        #    npred <- round(dim(data.scaled)[2]*ct)
+        #    model <- opls(x = data.scaled, y=as.factor(pheno), 
+        #                  predI=npred, plotL = FALSE, 
+        #                  log10L=FALSE, algoC = "nipals", 
+        #                  silent = TRUE)
+        #}
+        
+        dd <- cbind(pheno, data.scaled)
+        temp.model <- plsr(pheno ~ ., data=dd, validation = "CV")
+        if(is.null(cumvar.threshold)) {
+            numcomp <- selectNcomp(temp.model)
+            if(numcomp == 0) numcomp <- 1
+        } else {
+            ct <- cumvar.threshold/100
+            numcomp <- round(n.snp*ct)
+            
+            #bbb <- sort(explvar(temp.model), decreasing = TRUE)
+            #tt <- bbb[1]
+            #if(tt >= cumvar.threshold) {
+            #    numcomp = 1
+            #} else {
+            #    for(i in 2:length(bbb)) {
+            #        tt <- tt + bbb[i]
+            #        if(tt >= cumvar.threshold) {
+            #            numcomp <- i
+            #            break
+            #        }
+            #    }
+            #    numcomp <- i
+            #}
+            
         }
+        
+        if(numcomp == 1) numcomp <- 2
+        
+        model <- plsr(pheno ~ ., numcomp, data=dd, validation = "none")
+        
+        # X
+        nrow.scores <- dim(model[["scores"]])[1]
+        ncol.scores <- dim(model[["scores"]])[2]
+        nrow.loadings <- dim(model[["loadings"]])[1]
+        ncol.loadings <- dim(model[["loadings"]])[2]
+        # Y
+        nrow.yscores <- dim(model[["Yscores"]])[1]
+        ncol.yscores <- dim(model[["Yscores"]])[2]
+        nrow.yloadings <- dim(model[["Yloadings"]])[1]
+        ncol.yloadings <- dim(model[["Yloadings"]])[2]
+        # , byrow = TRUE
+        S <- matrix(model[["scores"]], nrow=nrow.scores, ncol=ncol.scores) #%*% t(matrix(model[["loadings"]], nrow=nrow.loadings, ncol=ncol.loadings))
+        Y <- matrix(model[["Yscores"]], nrow=nrow.yscores, ncol=ncol.yscores) %*% t(matrix(model[["Yloadings"]], nrow=nrow.yloadings, ncol=ncol.yloadings))
+        
     }
   
-    S <- model@scoreMN
     
-    return(list(S = S))
+    
+    return(list(S = S, Y = Y, model=model))
 }
 
-preprocessLASSO <- function(data, pheno, reg.family) {
+preprocessLASSO <- function(data, pheno, reg.family, penalty=0.001) {
     #### LASSO ####
     tryCatch({
-        fit <- cv.glmnet(x=as.matrix(data),
+        if(reg.family == "binomial") {
+            pheno <- as.factor(pheno)
+        }
+        fit <- glmnet(x=as.matrix(data),
                          alpha=1, # LASSO
-                         y=as.factor(pheno), 
+                         y=pheno, 
                          family=reg.family)
+        #fit <- cv.glmnet(x=as.matrix(data),
+        #              alpha=1, # LASSO
+        #              y=pheno, 
+        #              family=reg.family,
+        #              nfolds=10)
+    
     }, error=function(e) {
         print(e)
     })
-    
-    return(list(fit=fit))
+    S <- data[,which(coef(fit, s=penalty)[-1] != 0)]
+    return(list(S=S, fit=fit, model="LASSO"))
 }
 
-preprocessRidge <- function(data, pheno, reg.family) {
+preprocessRidge <- function(data, pheno, reg.family, penalty=0.001) {
     tryCatch({
-        fit <- cv.glmnet(x=as.matrix(data),
+        if(reg.family == "binomial") {
+            pheno <- as.factor(pheno)
+        }
+        fit <- glmnet(x=as.matrix(data),
                          alpha=0, # Ridge
-                         y=as.factor(pheno), 
+                         y=pheno, 
                          family=reg.family)
     }, error=function(e) {
         print(e)
     })
-  
-    return(list(fit=fit))
+    S <- data[,which(coef(fit, s=penalty)[-1] != 0)]
+    return(list(S=S, fit=fit, model="ridge"))
 }

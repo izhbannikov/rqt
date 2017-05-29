@@ -4,7 +4,7 @@
 
 ### Development version
 
-```rqt``` is currently under consideration for acceptance into Bioconductor:  https://github.com/Bioconductor/Contributions/issues/212
+```rqt``` is currently accepted into Bioconductor:  https://github.com/Bioconductor/Contributions/issues/212
 and hence requires the development version of R (>=3.4) and the development version of Bioconductor (3.5).
 If you have these installed, then ```rqt``` can be installed from Github using biocLite:
 
@@ -15,15 +15,11 @@ biocLite("izhbannikov/rqt", dependencies=TRUE, build_vignettes=TRUE)
 
 ### Release version
 
-The last version of rqt that is compatible with the current version of R (3.3), 
-which can be downloaded using devtools:
+The last version of rqt can be downloaded using devtools:
 
 ```
 devtools::install_github("izhbannikov/rqt@develop", buildVignette=TRUE)
 ```
-
-There are no significant changes to functionality (except R >=3.3).
-
 
 ## Usage
 

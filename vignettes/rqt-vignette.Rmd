@@ -138,7 +138,8 @@ geno <- data[, 2:dim(data)[2]]
 colnames(geno) <- paste(seq(1, dim(geno)[2]))
 geno.obj <- SummarizedExperiment(geno)
 obj <- rqt(phenotype=pheno, genotype=geno.obj)
-res <- geneTest(obj, method="pls", out.type = "D", scale = TRUE)
+# Not yet supported, sorry!
+#res <- geneTest(obj, method="pls", out.type = "D", scale = TRUE)
 print(res)
 ```
 

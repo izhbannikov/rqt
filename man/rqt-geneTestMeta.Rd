@@ -12,7 +12,7 @@ geneTestMeta(objects, ...)
 \S4method{geneTestMeta}{list}(objects, perm = 0, STT = 0.2,
   weight = FALSE, cumvar.threshold = 75, out.type = "D", method = "pca",
   scaleData = FALSE, asym.pval = FALSE, comb.test = "wilkinson",
-  verbose = FALSE)
+  penalty = 0.001, verbose = FALSE)
 }
 \arguments{
 \item{objects}{List of objects of class rqt}
@@ -39,7 +39,8 @@ Possible values: \code{D} (dichotomous or binary),
 \code{C} (continous or quantitative).}
 
 \item{method}{Method used to reduce multicollinerity and account for LD. 
-Default: PLS-DA.}
+Default: \code{pca}. 
+Another methods available: \code{lasso}, \code{ridge}, \code{pls}.}
 
 \item{scaleData}{A logic parameter (TRUE/FALSE) indicating scaling of 
 the genotype dataset.}
@@ -47,6 +48,9 @@ the genotype dataset.}
 \item{asym.pval}{Indicates Monte Carlo approximation for p-values. Default: FALSE.}
 
 \item{comb.test}{Statistical test for combining p-values.}
+
+\item{penalty}{Value of \code{penalty} parameter for LASSO/ridge regression.
+Default: 0.001}
 
 \item{verbose}{Indicates verbosing output. Default: FALSE.}
 }
