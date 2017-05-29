@@ -6,7 +6,7 @@
 \usage{
 preprocess(data, pheno = NULL, method = "pca", reg.family = "binomial",
   scaleData = FALSE, cumvar.threshold = 75, out.type = "D",
-  verbose = FALSE)
+  penalty = 0.001, verbose = FALSE)
 }
 \arguments{
 \item{data}{An input matrix with values of 
@@ -28,7 +28,10 @@ not scaling should be performed. Default: \code{FALSE}.}
 Default: \code{75}}
 
 \item{out.type}{An output (phenotype) type. 
-Default: \code{"D"}.}
+Default: \code{"D"}}
+
+\item{penalty}{Value of penalty parameter for LASSO/ridge regression. 
+Default: \code{0.001}}
 
 \item{verbose}{Indicates verbosing output. Default: FALSE.}
 }
