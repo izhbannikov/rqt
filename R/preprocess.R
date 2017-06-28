@@ -21,29 +21,28 @@
 #' @importFrom SummarizedExperiment assay assays
 #' @importFrom RUnit checkEqualsNumeric
 #' @importFrom pls plsr cppls explvar selectNcomp
-#'
 NULL
 
 
 ridge_se <- function(xs,y,yhat,my_mod, verbose=FALSE){
-  # Note, you can't estimate an intercept here
-  n <- dim(xs)[1]
-  k <- dim(xs)[2]
-  sigma_sq <- sum((y - yhat)^2)/ (n-k)
-  lam <- my_mod$lambda.min
-  if(is.null(my_mod$lambda.min)) {
-    lam <- 0
-  }
-  i_lams <- Matrix(diag(x=1,nrow=k,ncol=k),sparse=TRUE)
-  xpx <- t(xs) %*% xs
-  xpxinvplam <- solve(xpx + lam*i_lams)
-  var_cov <- sigma_sq * (xpxinvplam %*% xpx %*% xpxinvplam)
-  se_bs <- sqrt(diag(var_cov))
-  
-  if(verbose) 
-    print('NOTE: These standard errors are very biased.')
-  
-  return(list(vcov=var_cov, se=se_bs))
+    # Note, you can't estimate an intercept here
+    n <- dim(xs)[1]
+    k <- dim(xs)[2]
+    sigma_sq <- sum((y - yhat)^2)/ (n-k)
+    lam <- my_mod$lambda.min
+    if(is.null(my_mod$lambda.min)) {
+        lam <- 0
+    }
+    i_lams <- Matrix(diag(x=1,nrow=k,ncol=k),sparse=TRUE)
+    xpx <- t(xs) %*% xs
+    xpxinvplam <- solve(xpx + lam*i_lams)
+    var_cov <- sigma_sq * (xpxinvplam %*% xpx %*% xpxinvplam)
+    se_bs <- sqrt(diag(var_cov))
+    
+    if(verbose) 
+        print('NOTE: These standard errors are very biased.')
+    
+    return(list(vcov=var_cov, se=se_bs))
 }
 
 #' vcov_ridge: returns variance-covariance 
@@ -86,21 +85,23 @@ vcov_ridge <- function(x, y,  rmod, verbose=FALSE) {
 #' @param verbose Indicates verbosing output. Default: FALSE.
 #' @return A list of one: "S" - a data frame of predictor values.
 preprocess <- function(data, pheno=NULL,
-                       method="pca",
-                       reg.family="binomial", 
-                       scaleData=FALSE, 
-                       cumvar.threshold=75,
-                       out.type="D",
-                       penalty=0.001,
-                       verbose=FALSE) {
+                        method="pca",
+                        reg.family="binomial", 
+                        scaleData=FALSE, 
+                        cumvar.threshold=75,
+                        out.type="D",
+                        penalty=0.001,
+                        verbose=FALSE) {
     
     
     switch(method, 
         pca={
-            return(preprocessPCA(data, scaleData, cumvar.threshold, verbose))
+            return(preprocessPCA(data, scaleData, 
+                                cumvar.threshold, verbose))
         },
         pls={
-            return(preprocessPLS(data, pheno, scaleData, cumvar.threshold, out.type))
+            return(preprocessPLS(data, pheno, scaleData, 
+                                cumvar.threshold, out.type))
         },
         lasso={
             return(preprocessLASSO(data, pheno, reg.family, penalty))
@@ -111,7 +112,7 @@ preprocess <- function(data, pheno=NULL,
         {
             stop("Unknown method provided.")
         }
-  )
+    )
 }
 
 
@@ -147,23 +148,23 @@ build.null.model <- function(y, x, reg.family="binomial", verbose=FALSE) {
     if(reg.family == "binomial") {
         if(length(x) != 0) {
             fit <- glm(y ~ ., data=data.frame(x), 
-                           na.action=na.exclude,
-                         family = binomial) 
+                        na.action=na.exclude,
+                        family = binomial) 
             #family = binomial(link=logit)),TRUE)
         } else {
             fit <- glm(y ~ 1, na.action=na.exclude,
-                         family = binomial) 
+                        family = binomial) 
             #family = binomial(link=logit)),TRUE)
         }
     } else if(reg.family == "gaussian") {
         if(length(x) != 0) {
             fit <- glm(y ~ ., data=data.frame(x), 
-                   na.action=na.exclude,
-                   family = reg.family)
+                        na.action=na.exclude,
+                        family = reg.family)
         } else {
             fit <- glm(y ~ 1, 
-                     na.action=na.exclude,
-                     family = reg.family)
+                        na.action=na.exclude,
+                        family = reg.family)
         }
     } else {
         stop(paste("Unknown reg.family:", reg.family))
@@ -324,13 +325,16 @@ preprocessPLS <- function(data, pheno, scaleData, cumvar.threshold, out.type) {
         nrow.yloadings <- dim(model[["Yloadings"]])[1]
         ncol.yloadings <- dim(model[["Yloadings"]])[2]
         # , byrow = TRUE
-        S <- matrix(model[["scores"]], nrow=nrow.scores, ncol=ncol.scores) #%*% t(matrix(model[["loadings"]], nrow=nrow.loadings, ncol=ncol.loadings))
-        Y <- matrix(model[["Yscores"]], nrow=nrow.yscores, ncol=ncol.yscores) %*% t(matrix(model[["Yloadings"]], nrow=nrow.yloadings, ncol=ncol.yloadings))
-        
+        S <- matrix(model[["scores"]], nrow=nrow.scores, ncol=ncol.scores) 
+        #%*% t(matrix(model[["loadings"]], 
+        #             nrow=nrow.loadings, ncol=ncol.loadings))
+        tmp_mtx1 <- matrix(model[["Yscores"]], 
+                          nrow=nrow.yscores, ncol=ncol.yscores)
+        tmp_mtx2 <- t(matrix(model[["Yloadings"]], 
+                             nrow=nrow.yloadings, ncol=ncol.yloadings))
+        Y <- tmp_mtx1 %*% tmp_mtx2
     }
   
-    
-    
     return(list(S = S, Y = Y, model=model))
 }
 
