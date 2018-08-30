@@ -9,8 +9,9 @@ and hence requires the version of R >=3.4 and the version of Bioconductor of 3.5
 If you have these installed, then ```rqt``` can be installed from Github using biocLite:
 
 ```
-source("https://bioconductor.org/biocLite.R")
-biocLite("rqt")
+if (!requireNamespace("BiocManager", quietly=TRUE))
+    install.packages("BiocManager")
+BiocManager::install("rqt")
 ```
 
 ### Developing version
