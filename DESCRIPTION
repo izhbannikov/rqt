@@ -1,7 +1,7 @@
 Package: rqt
 Type: Package
 Title: rqt: utilities for gene-level meta-analysis
-Version: 1.23.0
+Version: 1.24.0
 Author: I. Y. Zhbannikov, K. G. Arbeev, A. I. Yashin.
 Maintainer: Ilya Y. Zhbannikov <ilya.zhbannikov@duke.edu>
 Description: Despite the recent advances of modern GWAS methods, it
