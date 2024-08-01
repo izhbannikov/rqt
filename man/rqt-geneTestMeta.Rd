@@ -9,10 +9,20 @@ combined effect sizes.}
 \usage{
 geneTestMeta(objects, ...)
 
-\S4method{geneTestMeta}{list}(objects, perm = 0, STT = 0.2,
-  weight = FALSE, cumvar.threshold = 75, out.type = "D", method = "pca",
-  scaleData = FALSE, asym.pval = FALSE, comb.test = "wilkinson",
-  penalty = 0.001, verbose = FALSE)
+\S4method{geneTestMeta}{list}(
+  objects,
+  perm = 0,
+  STT = 0.2,
+  weight = FALSE,
+  cumvar.threshold = 75,
+  out.type = "D",
+  method = "pca",
+  scaleData = FALSE,
+  asym.pval = FALSE,
+  comb.test = "wilkinson",
+  penalty = 0.001,
+  verbose = FALSE
+)
 }
 \arguments{
 \item{objects}{List of objects of class rqt}

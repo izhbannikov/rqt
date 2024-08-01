@@ -17,8 +17,6 @@ covariates(obj)
 covariates returns the covariates
 }
 \description{
-This function performs an access to covariates
-
 An accessor to covariates
 }
 \examples{

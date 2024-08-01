@@ -80,6 +80,7 @@ rqt <- function(phenotype=NULL, genotype=NULL, covariates=NULL,
 #' @param penalty A value of \code{penalty} parameter for LASSO/ridge regression.
 #' Default: 0.001
 #' @param verbose Indicates verbosing output. Default: FALSE.
+#' @return Object of class \code{rqt}
 #' @rdname rqt-geneTest
 #' @export
 #' @examples
@@ -313,7 +314,7 @@ setMethod("geneTestMeta", signature="list",
                       and will be set to 100.")
               cumvar.threshold <- 100
             }
-            if(class(objects) != "list") {
+            if(inherits(objects, "list") == FALSE) {
               stop("objects must be a list of rqt class objects!")
             }
             ### Meta-analysis ###
@@ -390,7 +391,7 @@ setMethod("geneTestMeta", signature="list",
 #' @param L TODO
 #' @param STT Numeric indicating soft truncation threshold (STT) to convert 
 #' to gamma parameter (must be <= 0.4).
-#' @return a TODO
+#' @return a number from gamma distribution
 get.a <- function(L,STT=0.2) {
   aa <- diff <- seq(0,1,length=200)
   asize <- length(aa)
@@ -406,7 +407,9 @@ get.stt <- function(L,a,STT=0.2){
   return(ans)
 }
 
-
+#' get.reg.family
+#' @param out.type out.type
+#' @return reg.family
 get.reg.family <- function(out.type="D") {
   if(out.type == "D") {
     reg.family <- "binomial"
@@ -424,6 +427,19 @@ get.reg.family <- function(out.type="D") {
 # supplementary code provided by Lee et al 2016 
 # "Gene-set association tests for next-generation sequencing data"
 #
+#' get.reg.family
+#' @param phenotype phenotype
+#' @param genotype genotype
+#' @param covariates covariates
+#' @param STT STT
+#' @param weight weight
+#' @param cumvar.threshold cumvar.threshold
+#' @param method method
+#' @param out.type out.type
+#' @param scaleData scaleData
+#' @param penalty penalty
+#' @param verbose verbose
+#' @return rslt
 geneTestOne <- function(phenotype, genotype, covariates, STT=0.2, weight=FALSE,
                         cumvar.threshold=75, method="pca", out.type="D", 
                         scaleData=FALSE, penalty=0.001, verbose=FALSE) {
@@ -778,7 +794,7 @@ geneTestOne <- function(phenotype, genotype, covariates, STT=0.2, weight=FALSE,
 #' 
 #' @description Common methods for class rqt. 
 #' This document lists a series of basic methods for the class rqt
-#' 
+#' @return None
 NULL
 
 #' This function performs an access to phenotype

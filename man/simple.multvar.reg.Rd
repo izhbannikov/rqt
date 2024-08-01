@@ -14,7 +14,7 @@ simple.multvar.reg(null.model, Z, verbose = FALSE)
 \item{verbose}{Indicates verbosing output. Default: FALSE.}
 }
 \value{
-A list of two: "S" - a dataframe with predictors and "fit"
+A list of two: "S" - a dataframe with predictors and "fit" 
 - an object returned by "glm" function.
 }
 \description{

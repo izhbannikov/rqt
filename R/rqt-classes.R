@@ -18,6 +18,7 @@
 #'      test statistics (\code{Q1}, \code{Q2}, \code{Q3}), 
 #'      p-values (\code{p1.Q1}, \code{p2.Q2}, \code{p3.Q3})}
 #'}
+#'@return None
 #'@rdname rqt-class
 setClass("rqt", slots=c(phenotype="vector", 
                         genotype="SummarizedExperiment", 

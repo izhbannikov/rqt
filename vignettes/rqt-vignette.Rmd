@@ -110,7 +110,7 @@ print(res)
 
 This method is used for continous outcome, i.e. out.type = "C".
 
-````{r, echo=TRUE, message=FALSE}
+```{r, echo=TRUE, message=FALSE}
 library(rqt)
 
 data <- data.matrix(read.table(system.file("extdata/test.cont1.dat",
@@ -128,7 +128,7 @@ print(res)
 
 This method of data preprocessing is used for dichotomous outcome.
 
-````{r, echo=TRUE, message=FALSE}
+```{r, echo=TRUE, message=FALSE}
 library(rqt)
 
 data <- data.matrix(read.table(system.file("extdata/test.bin1.dat",
@@ -154,7 +154,7 @@ In such cases, the package \texttt{rqt}
 can accept additional covariates, in form of 
 \texttt{N} by \texttt{K} matrix, as provided below:
 
-````{r, echo=TRUE, message=FALSE}
+```{r, echo=TRUE, message=FALSE}
 library(rqt)
 
 data <- data.matrix(read.table(system.file("extdata/test.bin1.dat",
@@ -172,7 +172,7 @@ print(res)
 
 For continous phenotype:
 
-````{r, echo=TRUE, message=FALSE}
+```{r, echo=TRUE, message=FALSE}
 library(rqt)
 
 data <- data.matrix(read.table(system.file("extdata/test.cont1.dat",

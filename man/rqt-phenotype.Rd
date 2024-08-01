@@ -17,8 +17,6 @@ phenotype(obj)
 phenotype returns the phenotype
 }
 \description{
-This function performs an access to phenotype
-
 A phenotype accessor
 }
 \examples{

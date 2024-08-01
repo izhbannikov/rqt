@@ -17,8 +17,6 @@ results(obj)
 results returns the results
 }
 \description{
-This function performs an access to covariates
-
 An accessor to results
 }
 \examples{

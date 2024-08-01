@@ -13,7 +13,7 @@ get.a(L, STT = 0.2)
 to gamma parameter (must be <= 0.4).}
 }
 \value{
-a TODO
+a number from gamma distribution
 }
 \description{
 Get a given STT
