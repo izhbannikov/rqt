@@ -1,7 +1,7 @@
 Package: rqt
 Type: Package
 Title: rqt: utilities for gene-level meta-analysis
-Version: 1.2.3
+Version: 1.31.1
 Authors@R: c(person("Ilya", "Zhbannikov", email = "ilya.zhbannikov@duke.edu", role = c("aut", "cre")), 
              person("Konstantin", "Arbeev", role = c("aut")), 
              person("Anatoliy", "Yashin", role = c("aut")))
