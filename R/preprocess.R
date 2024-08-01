@@ -21,7 +21,6 @@
 #' @importFrom SummarizedExperiment assay assays
 #' @importFrom RUnit checkEqualsNumeric
 #' @importFrom pls plsr cppls explvar selectNcomp
-<<<<<<< HEAD
 
 
 #' ridge_se
@@ -35,11 +34,6 @@
 #' @return list(vcov, se). 
 #' vcov: variance-covariance matrix;
 #' se: standard deviation
-=======
-NULL
-
-
->>>>>>> upstream/devel
 ridge_se <- function(xs,y,yhat,my_mod, verbose=FALSE){
     # Note, you can't estimate an intercept here
     n <- dim(xs)[1]
@@ -136,11 +130,7 @@ preprocess <- function(data, pheno=NULL,
 #' @param null.model A fitted null model
 #' @param Z A genotype matrix
 #' @param verbose Indicates verbosing output. Default: FALSE.
-<<<<<<< HEAD
 #' @return A list of two: "S" - a dataframe with predictors and "fit" 
-=======
-#' @return A list of two: "S" - a dataframe with predictors and "fit"
->>>>>>> upstream/devel
 #' - an object returned by "glm" function.
 simple.multvar.reg <- function(null.model, Z, verbose=FALSE) {
     # Fit regression according to provided null model #
@@ -193,7 +183,6 @@ build.null.model <- function(y, x, reg.family="binomial", verbose=FALSE) {
     return(resid(fit))
 }
 
-<<<<<<< HEAD
 #' preprocessPCA
 #' @param data data
 #' @param scaleData scaled data
@@ -201,9 +190,6 @@ build.null.model <- function(y, x, reg.family="binomial", verbose=FALSE) {
 #' @param verbose Indicates verbosing output
 #' Default: FALSE.
 #' @return list(S, indices, model). 
-=======
-
->>>>>>> upstream/devel
 preprocessPCA <- function(data, scaleData, cumvar.threshold, verbose) {
     ct <- cumvar.threshold
     res.pca <- prcomp(data, scale=scaleData)
@@ -247,7 +233,6 @@ preprocessPCA <- function(data, scaleData, cumvar.threshold, verbose) {
     return(list(S = S, indexes=indexes, model="PCA"))
 }
 
-<<<<<<< HEAD
 #' preprocessPLS
 #' @param data data
 #' @param pheno pheno data
@@ -256,9 +241,6 @@ preprocessPCA <- function(data, scaleData, cumvar.threshold, verbose) {
 #' @param out.type out.type
 #' Default: FALSE.
 #' @return list(S, Y, model) 
-=======
-
->>>>>>> upstream/devel
 preprocessPLS <- function(data, pheno, scaleData, cumvar.threshold, out.type) {
   
     
@@ -379,7 +361,6 @@ preprocessPLS <- function(data, pheno, scaleData, cumvar.threshold, out.type) {
     return(list(S = S, Y = Y, model=model))
 }
 
-<<<<<<< HEAD
 #' preprocessLASSO
 #' @param data data
 #' @param pheno pheno data
@@ -387,8 +368,6 @@ preprocessPLS <- function(data, pheno, scaleData, cumvar.threshold, out.type) {
 #' @param penalty penalty
 #' Default: FALSE.
 #' @return list(S, fit, model) 
-=======
->>>>>>> upstream/devel
 preprocessLASSO <- function(data, pheno, reg.family, penalty=0.001) {
     #### LASSO ####
     tryCatch({
@@ -412,7 +391,6 @@ preprocessLASSO <- function(data, pheno, reg.family, penalty=0.001) {
     return(list(S=S, fit=fit, model="LASSO"))
 }
 
-<<<<<<< HEAD
 #' preprocessLASSO
 #' @param data data
 #' @param pheno pheno data
@@ -420,8 +398,6 @@ preprocessLASSO <- function(data, pheno, reg.family, penalty=0.001) {
 #' @param penalty penalty
 #' Default: FALSE.
 #' @return list(S, fit, model) 
-=======
->>>>>>> upstream/devel
 preprocessRidge <- function(data, pheno, reg.family, penalty=0.001) {
     tryCatch({
         if(reg.family == "binomial") {

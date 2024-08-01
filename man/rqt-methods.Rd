@@ -4,12 +4,7 @@
 \alias{rqt}
 \title{The rqt class constructor}
 \usage{
-<<<<<<< HEAD
 rqt(phenotype = NULL, genotype = NULL, covariates = NULL, results = NULL)
-=======
-rqt(phenotype = NULL, genotype = NULL, covariates = NULL,
-  results = NULL)
->>>>>>> upstream/devel
 }
 \arguments{
 \item{phenotype}{Phenotype (a vector of length 

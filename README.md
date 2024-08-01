@@ -17,7 +17,6 @@ biocLite("rqt")
 
 The last version of rqt can be downloaded using devtools:
 
-
 ```
 devtools::install_github("izhbannikov/rqt@devel", buildVignette=TRUE)
 ```

@@ -8,7 +8,6 @@
 \usage{
 geneTest(obj, ...)
 
-<<<<<<< HEAD
 \S4method{geneTest}{rqt}(
   obj,
   perm = 0,
@@ -22,12 +21,6 @@ geneTest(obj, ...)
   penalty = 0.001,
   verbose = FALSE
 )
-=======
-\S4method{geneTest}{rqt}(obj, perm = 0, STT = 0.2, weight = FALSE,
-  cumvar.threshold = 75, out.type = "D", method = "pca",
-  scaleData = FALSE, asym.pval = FALSE, penalty = 0.001,
-  verbose = FALSE)
->>>>>>> upstream/devel
 }
 \arguments{
 \item{obj}{Object of class \code{rqt}}
@@ -69,11 +62,8 @@ Default: 0.001}
 }
 \value{
 Updated rqt object with result slot
-<<<<<<< HEAD
 
 Object of class \code{rqt}
-=======
->>>>>>> upstream/devel
 }
 \description{
 This function performs a gene-level test based on combined effect sizes.

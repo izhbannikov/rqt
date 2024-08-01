@@ -4,7 +4,6 @@
 \alias{preprocess}
 \title{Preprocess input data with Principal Component Analysis method (PCA)}
 \usage{
-<<<<<<< HEAD
 preprocess(
   data,
   pheno = NULL,
@@ -16,11 +15,6 @@ preprocess(
   penalty = 0.001,
   verbose = FALSE
 )
-=======
-preprocess(data, pheno = NULL, method = "pca", reg.family = "binomial",
-  scaleData = FALSE, cumvar.threshold = 75, out.type = "D",
-  penalty = 0.001, verbose = FALSE)
->>>>>>> upstream/devel
 }
 \arguments{
 \item{data}{An input matrix with values of 

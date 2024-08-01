@@ -1,16 +1,10 @@
 Package: rqt
 Type: Package
 Title: rqt: utilities for gene-level meta-analysis
-<<<<<<< HEAD
 Version: 1.31.1
 Authors@R: c(person("Ilya", "Zhbannikov", email = "ilya.zhbannikov@duke.edu", role = c("aut", "cre")), 
              person("Konstantin", "Arbeev", role = c("aut")), 
              person("Anatoliy", "Yashin", role = c("aut")))
-=======
-Version: 1.31.0
-Author: I. Y. Zhbannikov, K. G. Arbeev, A. I. Yashin.
-Maintainer: Ilya Y. Zhbannikov <ilya.zhbannikov@duke.edu>
->>>>>>> upstream/devel
 Description: Despite the recent advances of modern GWAS methods, it
         still remains an important problem of addressing calculation an
         effect size and corresponding p-value for the whole gene rather
@@ -22,11 +16,7 @@ Description: Despite the recent advances of modern GWAS methods, it
 URL: https://github.com/izhbannikov/rqt
 BugReports: https://github.com/izhbannikov/rqt/issues
 License: GPL
-<<<<<<< HEAD
 RoxygenNote: 7.3.2
-=======
-RoxygenNote: 6.0.1
->>>>>>> upstream/devel
 Suggests: BiocStyle, knitr, rmarkdown
 VignetteBuilder: knitr
 Imports:
