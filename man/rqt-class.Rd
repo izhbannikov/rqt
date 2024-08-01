@@ -4,9 +4,12 @@
 \name{rqt-class}
 \alias{rqt-class}
 \title{The rqt class}
+<<<<<<< HEAD
 \value{
 None
 }
+=======
+>>>>>>> upstream/devel
 \description{
 This class stores parameters and results of the rtq algorithms
 }

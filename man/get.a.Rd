@@ -13,7 +13,11 @@ get.a(L, STT = 0.2)
 to gamma parameter (must be <= 0.4).}
 }
 \value{
+<<<<<<< HEAD
 a number from gamma distribution
+=======
+a TODO
+>>>>>>> upstream/devel
 }
 \description{
 Get a given STT

@@ -17,6 +17,11 @@ results(obj)
 results returns the results
 }
 \description{
+<<<<<<< HEAD
+=======
+This function performs an access to covariates
+
+>>>>>>> upstream/devel
 An accessor to results
 }
 \examples{

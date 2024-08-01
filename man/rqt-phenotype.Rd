@@ -17,6 +17,11 @@ phenotype(obj)
 phenotype returns the phenotype
 }
 \description{
+<<<<<<< HEAD
+=======
+This function performs an access to phenotype
+
+>>>>>>> upstream/devel
 A phenotype accessor
 }
 \examples{

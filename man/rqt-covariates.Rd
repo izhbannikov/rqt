@@ -17,6 +17,11 @@ covariates(obj)
 covariates returns the covariates
 }
 \description{
+<<<<<<< HEAD
+=======
+This function performs an access to covariates
+
+>>>>>>> upstream/devel
 An accessor to covariates
 }
 \examples{

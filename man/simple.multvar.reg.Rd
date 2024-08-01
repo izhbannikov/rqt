@@ -14,7 +14,11 @@ simple.multvar.reg(null.model, Z, verbose = FALSE)
 \item{verbose}{Indicates verbosing output. Default: FALSE.}
 }
 \value{
+<<<<<<< HEAD
 A list of two: "S" - a dataframe with predictors and "fit" 
+=======
+A list of two: "S" - a dataframe with predictors and "fit"
+>>>>>>> upstream/devel
 - an object returned by "glm" function.
 }
 \description{

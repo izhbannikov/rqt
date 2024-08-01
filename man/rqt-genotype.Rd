@@ -17,6 +17,11 @@ genotype(obj)
 genotype returns the genotype
 }
 \description{
+<<<<<<< HEAD
+=======
+This function performs an access to genotype.
+
+>>>>>>> upstream/devel
 A genotype accessor
 }
 \examples{

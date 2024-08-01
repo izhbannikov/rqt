@@ -3,6 +3,7 @@
 \name{rqt-general}
 \alias{rqt-general}
 \alias{show.rqt}
+<<<<<<< HEAD
 \alias{summary.rqt}
 \alias{print.rqt}
 \title{General functions of \code{rqt} 
@@ -10,6 +11,10 @@ such as accessors and printing.}
 \value{
 None
 }
+=======
+\title{General functions of \code{rqt} 
+such as accessors and printing.}
+>>>>>>> upstream/devel
 \description{
 Common methods for class rqt. 
 This document lists a series of basic methods for the class rqt
